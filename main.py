@@ -50,7 +50,8 @@ async def create_car(cars: Union[Car, List[Car]]):
     try:
         if isinstance(cars, list):
             # If it's a list, insert each car individually
-            inserted_ids = [cars_collection.insert_one(car.model_dump()).inserted_id for car in cars]
+            car_data_list = [car.model_dump() for car in cars]
+            inserted_ids = cars_collection.insert_many(car_data_list).inserted_ids
             return JSONResponse(content={"car_ids": [str(car_id) for car_id in inserted_ids]}, status_code=201)
         else:
             # If it's a single car, insert it
@@ -108,11 +109,18 @@ async def get_car_status(car_id: str):
 
 # For Brokers
 @app.post("/brokers/")
-async def create_broker(broker: Broker):
+async def create_broker(brokers: Union[Broker, List[Broker]]):
     try:
-        broker_data = broker.model_dump()
-        broker_id = brokers_collection.insert_one(broker_data).inserted_id
-        return JSONResponse(content={"broker_id": str(broker_id)}, status_code=201)
+        if isinstance(brokers, list):
+            # If it's a list, insert each broker individually
+            broker_data_list = [broker.model_dump() for broker in brokers]
+            inserted_ids = brokers_collection.insert_many(broker_data_list).inserted_ids
+            return JSONResponse(content={"broker_ids": [str(broker_id) for broker_id in inserted_ids]}, status_code=201)
+        else:
+            # If it's a single broker, insert it
+            broker_data = brokers.model_dump()
+            broker_id = brokers_collection.insert_one(broker_data).inserted_id
+            return JSONResponse(content={"broker_id": str(broker_id)}, status_code=201)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
