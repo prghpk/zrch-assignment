@@ -151,10 +151,63 @@ def test_delete_broker():
 
 
 # Test case for listing cars
-# def test_list_cars():
-#     response = client.get("/listing/cars/")
-#     assert response.status_code == 200
-#     assert isinstance(response.json(), list)
+def test_list_cars_sold():
+    create_response = client.post("/cars/", json={
+    "brand": "Toyota",
+    "model": "Camry",
+    "year": 2020,
+    "color": "Silver",
+    "mileage": 30000,
+    "status": "sold",
+})
+    response = client.get("/listing/cars/?status=sold")
+    assert response.status_code == 200
+    assert isinstance(response.json(), list)
+    for item in response.json():
+        assert item["status"] == "sold"
+
+    # Cleanup: Delete the created cars
+    car_id = create_response.json()["car_id"]
+    client.delete(f"/cars/{car_id}")
+
+def test_list_cars_active():
+    create_response = client.post("/cars/", json={
+    "brand": "Toyota",
+    "model": "Camry",
+    "year": 2020,
+    "color": "Silver",
+    "mileage": 30000,
+    "status": "active",
+})
+    response = client.get("/listing/cars/?status=active")
+    assert response.status_code == 200
+    assert isinstance(response.json(), list)
+    for item in response.json():
+        assert item["status"] == "active"
+    
+    # Cleanup: Delete the created cars
+    car_id = create_response.json()["car_id"]
+    client.delete(f"/cars/{car_id}")
+
+def test_list_cars_inactive():
+    create_response = client.post("/cars/", json={
+    "brand": "Toyota",
+    "model": "Camry",
+    "year": 2020,
+    "color": "Silver",
+    "mileage": 30000,
+    "status": "inactive",
+})
+    
+    response = client.get("/listing/cars/?status=inactive")
+    assert response.status_code == 200
+    assert isinstance(response.json(), list)
+    for item in response.json():
+        assert item["status"] == "inactive"
+    
+    # Cleanup: Delete the created cars
+    car_id = create_response.json()["car_id"]
+    client.delete(f"/cars/{car_id}")
 
 # Run tests
 if __name__ == "__main__":
