@@ -4,7 +4,7 @@ from pymongo import MongoClient
 from pydantic import BaseModel
 from bson.objectid import ObjectId
 from enum import Enum
-from typing import Union, List
+from typing import Optional, Union, List
 
 app = FastAPI()
 
@@ -30,12 +30,25 @@ class Car(BaseModel):
     mileage: float
     status: CarStatus
 
+class CarUpdate(BaseModel):
+    brand: Optional[str] = None
+    model: Optional[str] = None
+    year: Optional[int] = None
+    color: Optional[str] = None
+    mileage: Optional[float] = None
+    status: Optional[CarStatus] = None
+
 class Broker(BaseModel):
     name: str
     branches: str
     mobile: str
     email: str
 
+class BrokerUpdate(BaseModel):
+    name: Optional[str] = None
+    branches: Optional[str] = None
+    mobile: Optional[str] = None
+    email: Optional[str] = None
 class Listing(BaseModel):
     status: CarStatus
 
@@ -73,13 +86,13 @@ async def read_car(car_id: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.put("/cars/{car_id}")
-async def update_car(car_id: str, car: Car):
+async def update_car(car_id: str, car: CarUpdate):
     try:
         updated_car = cars_collection.update_one(
             {"_id": ObjectId(car_id)}, {"$set": car.model_dump()}
         )
         if updated_car.modified_count == 1:
-            return {"message": "Car updated successfully"}
+            return JSONResponse(content={"message": "Car updated successfully"}, status_code=200)
         else:
             raise HTTPException(status_code=404, detail="Car not found")
     except Exception as e:
@@ -136,13 +149,13 @@ async def read_broker(broker_id: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.put("/brokers/{broker_id}")
-async def update_broker(broker_id: str, broker: Broker):
+async def update_broker(broker_id: str, broker: BrokerUpdate):
     try:
         updated_broker = brokers_collection.update_one(
             {"_id": ObjectId(broker_id)}, {"$set": broker.model_dump()}
         )
         if updated_broker.modified_count == 1:
-            return {"message": "Broker updated successfully"}
+            return JSONResponse(content={"message": "Broker updated successfully"}, status_code=200)
         else:
             raise HTTPException(status_code=404, detail="Broker not found")
     except Exception as e:
