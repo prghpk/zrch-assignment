@@ -32,6 +32,8 @@ Make sure you have the following installed on your machine:
     docker-compose up --build
     ```
 
+4. Access the API at [http://0.0.0.0:8000](http://0.0.0.0:8000).
+
 ### Local Development
 
 For local development, follow these steps:
@@ -54,3 +56,11 @@ To run unit tests, use the following command:
 
 ```bash
 pytest
+```
+## API Documentation
+
+The API documentation is available when the server is running. Follow the steps below to access the documentation:
+
+1. Make sure the FastAPI server is running.
+2. Open your web browser.
+3. Visit [http://localhost:8000/docs](http://localhost:8000/docs) or [http://0.0.0.0:8000/docs](http://0.0.0.0:8000/docs) to access the API documentation.
