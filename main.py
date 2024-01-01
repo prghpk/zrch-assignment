@@ -9,8 +9,8 @@ from typing import Optional, Union, List
 app = FastAPI()
 
 # MongoDB connection URL
-# MONGO_URL = "mongodb://my-mongodb:27017"
-MONGO_URL ="mongodb://localhost:27017"
+MONGO_URL = "mongodb://my-mongodb:27017"
+# MONGO_URL ="mongodb://localhost:27017"
 client = MongoClient(MONGO_URL)
 db = client["car_platform"]
 cars_collection = db["cars"]
