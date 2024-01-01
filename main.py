@@ -49,6 +49,7 @@ class BrokerUpdate(BaseModel):
     branches: Optional[str] = None
     mobile: Optional[str] = None
     email: Optional[str] = None
+
 class Listing(BaseModel):
     status: CarStatus
 
@@ -72,7 +73,7 @@ async def create_car(cars: Union[Car, List[Car]]):
             car_id = cars_collection.insert_one(car_data).inserted_id
             return JSONResponse(content={"car_id": str(car_id)}, status_code=201)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise e
 
 @app.get("/cars/{car_id}", response_model=Car)
 async def read_car(car_id: str):
@@ -83,7 +84,7 @@ async def read_car(car_id: str):
         else:
             raise HTTPException(status_code=404, detail="Car not found")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise e
 
 @app.put("/cars/{car_id}")
 async def update_car(car_id: str, car: CarUpdate):
@@ -96,7 +97,7 @@ async def update_car(car_id: str, car: CarUpdate):
         else:
             raise HTTPException(status_code=404, detail="Car not found")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise e
 
 @app.delete("/cars/{car_id}")
 async def delete_car(car_id: str):
@@ -107,7 +108,7 @@ async def delete_car(car_id: str):
         else:
             raise HTTPException(status_code=404, detail="Car not found")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise e
 
 @app.get("/cars/{car_id}/status", response_model=Listing)
 async def get_car_status(car_id: str):
@@ -118,7 +119,7 @@ async def get_car_status(car_id: str):
         else:
             raise HTTPException(status_code=404, detail="Car not found")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise e
 
 # For Brokers
 @app.post("/brokers/")
@@ -135,7 +136,7 @@ async def create_broker(brokers: Union[Broker, List[Broker]]):
             broker_id = brokers_collection.insert_one(broker_data).inserted_id
             return JSONResponse(content={"broker_id": str(broker_id)}, status_code=201)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise e
 
 @app.get("/brokers/{broker_id}", response_model=Broker)
 async def read_broker(broker_id: str):
@@ -146,7 +147,7 @@ async def read_broker(broker_id: str):
         else:
             raise HTTPException(status_code=404, detail="Broker not found")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise e
 
 @app.put("/brokers/{broker_id}")
 async def update_broker(broker_id: str, broker: BrokerUpdate):
@@ -159,7 +160,7 @@ async def update_broker(broker_id: str, broker: BrokerUpdate):
         else:
             raise HTTPException(status_code=404, detail="Broker not found")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise e
 
 @app.delete("/brokers/{broker_id}")
 async def delete_broker(broker_id: str):
@@ -170,7 +171,7 @@ async def delete_broker(broker_id: str):
         else:
             raise HTTPException(status_code=404, detail="Broker not found")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise e
 
 @app.get("/listing/cars/", response_model=list[Car])
 async def get_model(
@@ -205,7 +206,7 @@ async def get_model(
         else:
             raise HTTPException(status_code=404, detail="No cars found based on the provided criteria")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise e
 
 if __name__ == "__main__":
     import uvicorn
